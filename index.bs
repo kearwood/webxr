@@ -1311,7 +1311,29 @@ The {{XRInputSource/gamepad}}'s {{Gamepad/id}} also enforces additional behavior
   - If the input device cannot be reliably identified the {{XRInputSource/gamepad}}'s {{Gamepad/id}} MUST be <code>"unknown"</code>.
   - If the UA masks the input device type for any reason the {{XRInputSource/gamepad}}'s {{Gamepad/id}} MUST be <code>"unknown"</code>
 
-ISSUE: <a href="https://github.com/immersive-web/webxr/issues/550">GitHub #550</a> - Additional restrictions, still under discussion, will be applied to the formatting of the {{XRInputSource/gamepad}}'s {{Gamepad/id}} attribute. Until those restrictions have been identified, all {{XRInputSource/gamepad}} {{Gamepad/id}}'s should default to <code>"unknown"</code>.
+When a {{XRInputSource/gamepad}}'s {{Gamepad/id}} is not "unknown", it MUST conform to the following format:
+
+<pre class='railroad'>
+N: layout
+Opt:
+  Seq:
+    T: :
+    N: model
+</pre>
+
+The <dfn for="gamepad id">layout</dfn> indicates the capabilities and mapping of inputs to the {{Gamepad}} {{Gamepad/buttons}} and {{Gamepad/axes}}. Multiple different types of physical device MAY report the same layout as long as they are functionally equivalent and use identical {{Gamepad}} mappings. The [=gamepad id/layout=] string MUST be lowercase and contain no spaces or colons, with separate words concatenated with a hyphen (<code>-</code>) character. If multiple UAs expose the same device, they SHOULD make an effort to report the same [=gamepad id/layout=] string.
+
+<p class="note">
+To illustrate the above principles, all Windows Mixed Reality controllers should share a single [=gamepad id/layout=] string, such as <code>"windows-mixed-reality"</code>, because they all share the same inputs and are exposed the same way, even though there are several different models of the controller.
+</p>
+
+The <dfn for="gamepad id">model</dfn>, if present, indicates the exact vendor and model of the physical device. It is intended to allow applications to determine the correct mesh to display to users in order to match the device they are holding. It MUST be separated from the [=gamepad id/layout=] string by a colon (<code>:</code>) character, and MUST be a lowercase string containing no spaces or colons, with separate words concatenated with a hyphen (<code>-</code>) character. If the platform provides an appropriate identifier, such as a USB vendor and product ID, it SHOULD be used. Otherwise a descriptive name should be chosen, using the vendors preferred verbiage when possible. If multiple UAs expose the same device, they SHOULD make an effort to report the same [=gamepad id/model=] string.
+
+If a [=gamepad id/model=] cannot be determined, it MUST be omitted from the {{Gamepad/id}}, along with the preceding colon.
+
+<p class="note">
+If a UA is able to identify that an input device conforms to the capabilities and layout of an Oculus Touch controller, but is unable to identify the model of device, it may report an {{Gamepad/id}} of <code>"oculus-touch"</code>. If the UA was, however, able to determine the model of the device, it should report an {{Gamepad/id}} along the lines of <code>"oculus-touch:2nd-gen"</code>.
+</p>
 </section>
 
 <section class="unstable">
